@@ -1,8 +1,12 @@
 import Image from 'next/image'
 import React from 'react'
 import { FaArrowRight } from "react-icons/fa";
-
+import { GetServerSideProps } from "next";
+import Product from "@/app/components/products" 
+import Link from 'next/link';
 const HeroSection = () => {
+  
+
     const imagesArray = [
         { img: "/images/Logo1.png" },
         { img: "/images/Logo2.png" },
@@ -13,17 +17,17 @@ const HeroSection = () => {
         { img: "/images/Logo7.png" },
       ];
       const featureArray = [
-        { img: "/images/featureProduct1.png",title:"Library Stool Chair", titleBg:"#007580",Price:"$20",cartsrc:"/images/AddCartbg.png" },
-        { img: "/images/featureProduct2.png", title:"Library Stool Chair",titleBg:"#272343",Price:"$20",cartsrc:"/images/AddCart.png"},
-        { img: "/images/featureProduct3.png" ,title:"Library Stool Chair",titleBg:"#272343",Price:"$20",cartsrc:"/images/AddCart.png"},
-        { img: "/images/featureProduct4.png" ,title:"Library Stool Chair",titleBg:"#272343",Price:"$20",cartsrc:"/images/AddCart.png"},
+        { img: "/images/featureProduct1.png",title:"Library Stool Chair", titleBg:"#007580",Price:"$20",cartsrc:"/images/AddCartbg.png",link:"/product/product-11" },
+        { img: "/images/featureProduct2.png", title:"Library Stool Chair",titleBg:"#272343",Price:"$20",cartsrc:"/images/AddCart.png",link:"/product/product-18"},
+        { img: "/images/featureProduct3.png" ,title:"Library Stool Chair",titleBg:"#272343",Price:"$20",cartsrc:"/images/AddCart.png",link:"/product/product-14"},
+        { img: "/images/featureProduct4.png" ,title:"Library Stool Chair",titleBg:"#272343",Price:"$20",cartsrc:"/images/AddCart.png",link:"/product/product-6"},
 
       ];
 
       const categoryArray = [
-        { img: "/images/Category1.png" },
-        { img: "/images/Category2.png" },
-        { img: "/images/Category3.png" },
+        { img: "/images/Category1.png",link:"/product/product-8" },
+        { img: "/images/Category2.png",link:"/product/product-15" },
+        { img: "/images/Category3.png" ,link:"/product/product-12"},
       ];
 
       const productPage = [
@@ -37,8 +41,11 @@ const HeroSection = () => {
         { img: "/images/Product4.png" ,title:"Library Stool Chair",titleBg:"#272343",Price:"$20",cartsrc:"/images/AddCart.png"},
       ];
 
+    
+   
     return (
     <>
+     {/* <NoSSR /> */}
     <div className="bg-[#F0F2F3] flex flex-col md:flex-row items-center justify-between min-h-screen p-8">
   {/* Left Text Section */}
   <div className="flex-1 text-left lg:ml-[70px]  w-full md:w-1/2 mb-8 md:mb-0">
@@ -89,6 +96,7 @@ interior.</h1>
 <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-2 p-2">
   {featureArray.map((data, index) => (
     <div key={index}>
+   <Link  href={data.link}>
       <Image 
         src={data.img} 
         alt={`Image ${index + 1}`} 
@@ -101,6 +109,7 @@ interior.</h1>
         <p className='ml-3 text-xl font-bold'>{data.Price}</p>
         <Image src={data.cartsrc} width={40} height={40}/>
 </div>
+</Link>
     </div>
   ))}
 </div>
@@ -111,6 +120,7 @@ interior.</h1>
 <div className="flex flex-wrap justify-around gap-4 p-2">
   {categoryArray.map((data, index) => (
     <div key={index} className="w-full sm:w-1/2 md:w-1/3 lg:w-1/4">
+      <Link href={data.link}>
       <Image 
         src={data.img} 
         alt={`Image ${index + 1}`} 
@@ -118,30 +128,14 @@ interior.</h1>
         height={424} 
         style={{ objectFit: 'cover' }} 
       />
+  </Link>
     </div>
   ))}
+  
 </div>
 
 {/* our product */}
-<h1 className="text-4xl m-12 md:text-xl leading-tight font-title text-center font-bold mb-4">Our Products</h1>
-<div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-2 p-2">
-  {productPage.map((data, index) => (
-    <div key={index}>
-      <Image 
-        src={data.img} 
-        alt={`Image ${index + 1}`} 
-        width={280} 
-        height={280} 
-        style={{ objectFit: 'cover' }} 
-      />
-<h1 className={`ml-3 mt-2 `}   style={{ color: data.titleBg }}>{data.title}</h1>
-<div className='flex justify-between'>
-        <p className='ml-3 text-xl font-bold'>{data.Price}</p>
-        <Image src={data.cartsrc} width={40} height={40}/>
-</div>
-    </div>
-  ))}
-</div>
+<Product/>
     </>
   )
 }

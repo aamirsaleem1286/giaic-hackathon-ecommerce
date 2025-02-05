@@ -1,56 +1,67 @@
-"use client"
-import React, { useState } from 'react';
-import { FaHeart } from 'react-icons/fa';
-import Image from 'next/image';
+"use client";
 
-const cartItems = [
-  {
-    id: 1,
-    image: '/images/featureProduct3.png',
-    price: 29.99,
-  },
- 
-];
+import { useUser, SignInButton, SignOutButton } from "@clerk/nextjs";
+import { useEffect, useState } from "react";
+import Image from "next/image";
 
 const CartPage = () => {
-  const [favorites, setFavorites] = useState([]);
+  const { isSignedIn, user } = useUser();
 
-  const toggleFavorite = (id) => {
-    setFavorites((prev) =>
-      prev.includes(id) ? prev.filter((item) => item !== id) : [...prev, id]
+  const [cart, setCart] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const storedCart = JSON.parse(localStorage.getItem("cart")) || [];
+    setCart(storedCart);
+    setLoading(false);
+  }, []);
+
+  if (loading) {
+    return <p>Loading...</p>;
+  }
+
+  if (!isSignedIn) {
+    return (
+      <div className="flex flex-col items-center justify-center min-h-screen">
+        <h1 className="text-2xl font-bold">You must sign in to proceed.</h1>
+        <SignInButton />
+      </div>
     );
+  }
+
+  const proceedToPayment = () => {
+    if (cart.length === 0) {
+      alert("Your cart is empty!");
+      return;
+    }
+
+    // Redirect to payment page
+    window.location.href="/payment";
   };
 
-  const totalPrice = cartItems.reduce((sum, item) => sum + item.price, 0).toFixed(2);
-
   return (
-    <div className="min-h-screen bg-gray-100 py-6 px-4 sm:px-6 lg:px-8">
-      {/* Title */}
-      <h1 className="text-3xl md:text-4xl font-bold text-center mb-6">Your Cart</h1>
+    <div className="p-6">
+      <h1 className="text-2xl font-bold mb-4">Your Cart</h1>
 
-      {/* Cart Items */}
-      <div className="flex flex-wrap justify-center md:justify-start gap-6">
-      <Image src="/images/cart.png" width={740} height={600} />
+      {cart.length === 0 ? (
+        <p>Your cart is empty.</p>
+      ) : (
+        cart.map((product) => (
+          <div key={product.id} className="border p-4 mb-2">
+            <Image src={product.imageUrl} alt={product.title} width={50} height={50} />
+            <h2>{product.title}</h2>
+            <p>${product.price}</p>
+          </div>
+        ))
+      )}
 
-      
+      <button onClick={proceedToPayment} className="bg-blue-500 text-white px-4 py-2 mt-4">
+        Proceed to Payment
+      </button>
 
-      {/* Summary Section */}
-      <div className=" shadow-md rounded-lg mt-8 p-6 max-w-md mx-auto w-full md:mt-12">
-        <h2 className="text-2xl font-semibold text-gray-800 mb-4 text-center">Summary</h2>
-        <div className="flex justify-between border-b py-2 mb-4">
-          <span className="text-gray-800 font-bold">Subtotal:</span>
-          <span className="text-gray-900 font-semibold">$198.00</span>
-        </div>
-        <div className="flex justify-between py-2 mb-4">
-          <span className="text-gray-800 font-bold">Estimated Delivery & Handling:</span>
-          <span className="text-gray-900 font-semibold">Free</span>
-        </div>
-        <div className="flex justify-between  mt-4 border-t pt-2">
-          <span className="text-gray-800 font-bold">Total:</span>
-          <span className="text-gray-900 font-bold">$198.00</span>
-        </div>
+      <div className="mt-4">
+        <SignOutButton />
       </div>
-    </div>
     </div>
   );
 };
